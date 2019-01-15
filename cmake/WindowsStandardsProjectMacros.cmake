@@ -1,5 +1,6 @@
+cmake_minimum_required(VERSION 2.8.9)
 # Add google tests macro
-macro(ADD_GOOGLE_TESTS_WCE executable)
+macro(ADD_GOOGLE_TESTS_WINDOWS_STANDARDS executable)
   foreach ( source ${ARGN} )
     string(REGEX MATCH .*cpp|.*cc source "${source}")
     if(source)
@@ -15,7 +16,7 @@ macro(ADD_GOOGLE_TESTS_WCE executable)
 endmacro()
 
 # Create source groups automatically based on file path
-macro( CREATE_SRC_GROUPS_WCE SRC )
+macro( CREATE_SRC_GROUPS_WINDOWS_STANDARDS SRC )
   foreach( F ${SRC} )
     string( REGEX MATCH "(^.*)([/\\].*$)" M ${F} )
     if(CMAKE_MATCH_1)
@@ -28,15 +29,15 @@ macro( CREATE_SRC_GROUPS_WCE SRC )
 endmacro()
 
 # Create test targets
-macro( CREATE_TEST_TARGETS_WCE BASE_NAME SRC DEPENDENCIES )
-  if( BUILD_WCE_TESTING )
+macro( CREATE_TEST_TARGETS_WINDOWS_STANDARDS BASE_NAME SRC DEPENDENCIES )
+  if( BUILD_WINDOWS_STANDARDS_TESTING )
     add_executable( ${BASE_NAME}_tests ${SRC} )
 
     if( ENABLE_GTEST_DEBUG_MODE )
     set_target_properties(${BASE_NAME}_tests PROPERTIES COMPILE_DEFINITIONS ENABLE_GTEST_DEBUG_MODE)
     endif()
 
-    CREATE_SRC_GROUPS_WCE( "${SRC}" )
+    CREATE_SRC_GROUPS_WINDOWS_STANDARDS( "${SRC}" )
     
     get_target_property(BASE_NAME_TYPE ${BASE_NAME} TYPE)
     if ("${BASE_NAME_TYPE}" STREQUAL "EXECUTABLE")
@@ -52,7 +53,7 @@ macro( CREATE_TEST_TARGETS_WCE BASE_NAME SRC DEPENDENCIES )
       gtest 
     )
 
-    ADD_GOOGLE_TESTS_WCE( ${BASE_NAME}_tests ${SRC} )
+    ADD_GOOGLE_TESTS_WINDOWS_STANDARDS( ${BASE_NAME}_tests ${SRC} )
   endif()
 endmacro()
 

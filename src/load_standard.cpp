@@ -2,8 +2,9 @@
 #include <algorithm>
 #include <functional>
 #include <regex>
+#include <fstream>
 
-#include "load_standard.h"
+#include "windows_standards/load_standard.h"
 
 
 struct Method_Text
@@ -18,9 +19,10 @@ struct Method_Text
 	std::string maximum_wavelength;
 };
 
-Spectrum load_spectrum(std::istream const& input)
+Spectrum load_spectrum(std::istream & input)
 {
 	Spectrum spectrum;
+	std::string line;
 	double multiplier = 1.0;
 
 	while(std::getline(input, line))
@@ -38,7 +40,7 @@ Spectrum load_spectrum(std::istream const& input)
 			continue;
 		}
 
-		std::regex pattern("\s*(\S+)\s+(\S+)\s*");
+		std::regex pattern("\\s*(\\S+)\\s+(\\S+)\\s*");
 		auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
 
 		if(itr != std::sregex_iterator())
@@ -73,25 +75,37 @@ Spectrum create_spectrum(std::string const& line)
 		spectrum.type = Spectrum_Type::BLACKBODY;
 		spectrum.description = "Blackbody";
 
-		std::regex pattern(".*T=(.*)K\)")
-		auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
-		std::string val = itr->str();
-		spectrum.t = std::stod(val);
+		std::regex pattern(".*T=(.*)K\\)");
+		//auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
+		//std::string val = itr->str();
+		std::smatch matches;
+		if(std::regex_search(line, matches, pattern))
+		{
+			std::string val = matches[1].str();
+			spectrum.t = std::stod(val);
+		}
 	}
 	else if(line.find("UV Action") != std::string::npos
 			&& line.find(".SSP") == std::string::npos)
 	{
 		spectrum.type = Spectrum_Type::UV_ACTION;
 		spectrum.description = "UV Action";
-		std::regex pattern(".*a=(.*), b=(.*)\)")
-		auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
-		std::string a = itr->str(1);
-		std::string a = itr->str(2);
-		spectrum.a = std::stod(a);
-		spectrum.b = std::stod(b);
+		std::regex pattern(".*a=(.*), b=(.*)\\)");
+		//auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
+		//std::string a = itr->str(1);
+		//std::string a = itr->str(2);
+		std::smatch matches;
+		if(std::regex_search(line, matches, pattern))
+		{
+			std::string a = matches[1].str();
+			std::string b = matches[2].str();
+			spectrum.a = std::stod(a);
+			spectrum.b = std::stod(b);
+		}
+		
 	}
-	else if(line.find("Krochmann") != std::string::npos
-			&& line.find(".SSP") == std::string::npos))
+	else if((line.find("Krochmann") != std::string::npos)
+			&& (line.find(".SSP") == std::string::npos))
 	{
 		spectrum.type = Spectrum_Type::KROCHMANN;
 		spectrum.description = "Krochmann";
@@ -121,37 +135,36 @@ Integration_Rule create_integration_rule(std::string const& line)
 		integration_rule.type = Integration_Rule_Type::TABLE;
 	}
 
-	std::regex pattern(".*k=(\S+)\).*");
-	auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
-
-	if(itr != std::sregex_iterator())
+	std::regex pattern(".*k=(\\S+)\\).*");
+	std::smatch matches;
+	if(std::regex_search(line, matches, pattern))
 	{
-		std::string k = itr->str(1);
+		std::string k = matches[1].str();
 		integration_rule.k = std::stod(k);
 	}
-
 	return integration_rule;
 }
 
-Wavelength_Boundry create_wavelength_boundry(std::string const& line)
+Wavelength_Boundary create_wavelength_boundary(std::string const& line)
 {
-	Wavelength_Boundry wavelength_boundry;
+	Wavelength_Boundary wavelength_boundary;
 
 	if(line.find("Wavelength set") != std::string::npos)
 	{
-		wavelength_boundry.type = Wavelength_Boundry_Type::WAVELENGTH_SET;
+		wavelength_boundary.type = Wavelength_Boundary_Type::WAVELENGTH_SET;
 	}	
 	else
 	{
-		wavelength_boundry.type = Wavelength_Boundry_Type::NUMBER;
-		wavelength_boundry.value = std::stod(line);
+		wavelength_boundary.type = Wavelength_Boundary_Type::NUMBER;
+		wavelength_boundary.value = std::stod(line);
 	}
 
-	return wavelength_boundry;
+	return wavelength_boundary;
 }
 
-Wavelength_Set load_wavelength_set(std::istream const& input)
+Wavelength_Set load_wavelength_set(std::istream & input)
 {
+	std::string line;
 	Wavelength_Set wavelength_set;
 	double multiplier = 1.0;
 
@@ -170,13 +183,12 @@ Wavelength_Set load_wavelength_set(std::istream const& input)
 			continue;
 		}
 
-		std::regex pattern("\s*(\S+)\s*");
-		auto itr = std::sregex_iterator(line.begin(), line.end(), pattern);
-
-		if(itr != std::sregex_iterator())
+		std::regex pattern("\\s*(\\S+)\\s*");
+		std::smatch matches;
+		if(std::regex_search(line, matches, pattern))
 		{
-			std::string wl = std::stod(itr->str(1));
-			wavelength_set.values.push_back(wl * multiplier);
+			std::string wl = matches[1].str();
+			wavelength_set.values.push_back(std::stod(wl) * multiplier);
 		}
 	}
 
@@ -215,8 +227,26 @@ Method convert(Method_Text const& method_text)
 {
 	Method method;
 
-	method.name = method_text.name;
+	std::map<std::string, Method_Type> string_to_type;
+	string_to_type["SOLAR"] = Method_Type::SOLAR;
+	string_to_type["PHOTOPIC"] = Method_Type::PHOTOPIC;
+	string_to_type["COLOR_TRISTIMX"] = Method_Type::COLOR_TRISTIMX;
+	string_to_type["COLOR_TRISTIMY"] = Method_Type::COLOR_TRISTIMY;
+	string_to_type["COLOR_TRISTIMZ"] = Method_Type::COLOR_TRISTIMZ;
+	string_to_type["THERMAL_IR"] = Method_Type::THERMAL_IR;
+	string_to_type["TUV"] = Method_Type::TUV;
+	string_to_type["SPF"] = Method_Type::SPF;
+	string_to_type["TDW"] = Method_Type::TDW;
+	string_to_type["TKR"] = Method_Type::TKR;
+
+	method.type = string_to_type[method_text.name];
 	method.description = method_text.description;
+	method.source_spectrum = create_spectrum(method_text.source_spectrum);
+	method.detector_spectrum = create_spectrum(method_text.detector_spectrum);
+	method.wavelength_set = create_wavelength_set(method_text.wavelength_set);
+	method.integration_rule = create_integration_rule(method_text.integration_rule);
+	method.min_wavelength = create_wavelength_boundary(method_text.minimum_wavelength);
+	method.max_wavelength = create_wavelength_boundary(method_text.maximum_wavelength);
 
 	return method;
 }
@@ -254,7 +284,7 @@ Method_Text convet(std::vector<std::string> const& method_from_file)
 
 	for(std::string const& line : method_from_file)
 	{
-		for(std::pair<std::string, std::function<void(std::string const&)> const& kv : fields_to_params)
+		for(std::pair<std::string, std::function<void(std::string const&)>> const& kv : fields_to_params)
 		{
 			if(line.find(kv.first) != std::string::npos)
 			{
@@ -278,7 +308,7 @@ std::vector<Method_Text> convert(std::vector<std::vector<std::string>> const& me
 	return converted_methods;
 }
 
-Standard load_standard(std::istream const& input)
+Standard load_standard(std::istream & input)
 {
 	std::string line;
 	std::string description;
@@ -286,35 +316,44 @@ Standard load_standard(std::istream const& input)
 
 	bool finished_method = false;
 
-	std::vector<std::vector<std::string>> methods;
+	std::vector<std::vector<std::string>> method_blocks;
+	std::vector<std::string> method_block;
+
+	Standard standard;
 
 	while(std::getline(input, line))
 	{
 		if(line.find("Standard Description") != std::string::npos)
 		{
-			description = line.substr(line.find(":") + 2);
+			standard.description = line.substr(line.find(":") + 2);
 			continue;
 		}
+#if 0
 		if(line.find("Standard Provides Methods") != std::string::npos)
 		{
-			methods_provided = line.substr(line.find(":") + 2);
+			standard.methods_provided = line.substr(line.find(":") + 2);
 			continue;
 		}
+#endif
 
 		if(line.find("Name") != std::string::npos)
 		{
-			method_text.clear();
+			method_block.clear();
 		}
 
-		method_text.push_back(line);
+		method_block.push_back(line);
 
 		if(line.find("Maximum Wavelength") != std::string::npos)
 		{
-			methods.push_back(method_text);
+			method_blocks.push_back(method_block);
 		}
 	}
 
-	std::vector<Method_Text> semi_converted = convert(methods);
+	std::vector<Method_Text> method_text_blocks = convert(method_blocks);
+	std::vector<Method> methods = convert(method_text_blocks);
+	standard.methods = methods;
+	
+	return standard;
 }
 
 Standard load_standard(std::string const& path)

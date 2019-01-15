@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+message("Start Windows Standards CMakeLists.txt")
+
 set( target_name Windows-Standards )
 
 set (CMAKE_CXX_STANDARD 11)
@@ -21,13 +23,13 @@ get_directory_property(hasParent PARENT_DIRECTORY)
 #  endif()
 #	set( SINGLE_PROJECT ON )
 #else()
-	option( BUILD_WINDOWSSTANDARDS_TESTING "Build testing targets" ON )
+	option( BUILD_WINDOWS_STANDARDS_TESTING "Build testing targets" ON )
 	option( SINGLE_PROJECT "Build windows standards library as single project" OFF )
 	set( DOWNLOAD_GTEST ON )
 #endif()
 
 if( DOWNLOAD_GTEST STREQUAL ON ) # Do not need gtest since it will be processed by E+
-	message("Test msg")
+	message("DOWNLOAD_GTEST STREQUAL ON")
 	# include(CMakeLists-GTest.txt)
 	configure_file(CMakeLists.txt.in ${CMAKE_BINARY_DIR}/googletest-download/CMakeLists.txt)
 	execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
@@ -52,6 +54,20 @@ if( DOWNLOAD_GTEST STREQUAL ON ) # Do not need gtest since it will be processed 
 endif ()
 
 include_directories(include)
-file(GLOB SOURCES "src/*.cpp")
+#file(GLOB SOURCES "src/*.cpp")
 
-config_compiler_and_linker_wce()
+file( GLOB SOURCES_CPP "src/*.cpp" )
+file( GLOB SOURCES_HPP "include/windows_standards/*.h" )
+LIST(APPEND SOURCES ${SOURCES_HPP} ${SOURCES_CPP})
+
+add_library( ${target_name} STATIC ${SOURCES} )
+
+if(BUILD_WINDOWS_STANDARDS_TESTING )
+	file( GLOB TEST_CPP RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "test/*.cpp" )
+		
+	CREATE_TEST_TARGETS_WINDOWS_STANDARDS( ${target_name} "${TEST_CPP}" "" )
+endif()
+
+config_compiler_and_linker_windows_standards()
+
+

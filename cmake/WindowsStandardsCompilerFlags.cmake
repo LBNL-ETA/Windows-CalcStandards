@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 2.8.9)
+
 # Make sure expat is compiled as a static library
 # ADD_DEFINITIONS("-DXML_STATIC")
 
@@ -42,7 +44,7 @@ if (MSVC AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 19.11))
   add_definitions(-D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING)
 endif()
 
-macro( warning_level_update_wce )
+macro( warning_level_update_windows_standards )
   foreach (flag_var
     CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
     CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)

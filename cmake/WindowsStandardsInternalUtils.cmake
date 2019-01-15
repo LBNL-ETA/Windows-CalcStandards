@@ -16,7 +16,9 @@
 #
 # This must be a macro(), as inside a function string() can only
 # update variables in the function scope.
-macro(fix_default_compiler_settings_wce)
+cmake_minimum_required(VERSION 2.8.9)
+
+macro(fix_default_compiler_settings_windows_standards)
   if (MSVC)
     # For MSVC, CMake sets certain flags to defaults we want to override.
     # This replacement code is taken from sample in the CMake Wiki at
@@ -45,13 +47,13 @@ endmacro()
 # Defines the compiler/linker flags used to build Google Test and
 # Google Mock.  You can tweak these definitions to suit your need.  A
 # variable's value is empty before it's explicitly assigned to.
-macro(config_compiler_and_linker_wce)
+macro(config_compiler_and_linker_windows_standards)
   if (NOT gtest_disable_pthreads)
     # Defines CMAKE_USE_PTHREADS_INIT and CMAKE_THREAD_LIBS_INIT.
     find_package(Threads)
   endif()
 
-  fix_default_compiler_settings_wce()
+  fix_default_compiler_settings_windows_standards()
   if (MSVC)
     # Newlines inside flags variables break CMake's NMake generator.
     # TODO(vladl@google.com): Add -RTCs and -RTCu to debug builds.

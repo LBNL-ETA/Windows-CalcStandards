@@ -1,4 +1,5 @@
-#include "method.h"
+#if 0
+#include "windows_standards/method.h"
 
 Method::Method(Method_Type const & type, 
 			std::string const & description, 
@@ -6,8 +7,8 @@ Method::Method(Method_Type const & type,
 			Spectrum const & detector_spectrum, 
 			Wavelength_Set const & wavelength_set, 
 			Integration_Rule const & integration_rule, 
-			Wavelength_Boundry const & min_wavelength, 
-			Wavelength_Boundry const & max_wavelength)
+			Wavelength_Boundary const & min_wavelength, 
+			Wavelength_Boundary const & max_wavelength)
 	: type(type), 
 	description(description),
 	source_spectrum(source_spectrum),
@@ -18,3 +19,4 @@ Method::Method(Method_Type const & type,
 	max_wavelength(max_wavelength)
 {
 }
+#endif
