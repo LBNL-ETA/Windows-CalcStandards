@@ -57,12 +57,14 @@ include_directories(include)
 #file(GLOB SOURCES "src/*.cpp")
 
 file( GLOB SOURCES_CPP "src/*.cpp" )
-file( GLOB SOURCES_HPP "include/windows_standards/*.h" )
-LIST(APPEND SOURCES ${SOURCES_HPP} ${SOURCES_CPP})
+file( GLOB SOURCES_HPP "src/*.h" )
+file( GLOB INTERFACE_HPP "include/windows_standards/*.h" )
+LIST(APPEND SOURCES ${SOURCES_HPP} ${SOURCES_CPP} ${INTERFACE_HPP})
 
 add_library( ${target_name} STATIC ${SOURCES} )
 
 if(BUILD_WINDOWS_STANDARDS_TESTING )
+	include_directories(src)
 	file( GLOB TEST_CPP RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "test/*.cpp" )
 		
 	CREATE_TEST_TARGETS_WINDOWS_STANDARDS( ${target_name} "${TEST_CPP}" "" )
