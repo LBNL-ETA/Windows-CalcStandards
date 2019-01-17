@@ -15,18 +15,18 @@ include( cmake/WindowsStandardsCompilerFlags.cmake )
 # google test will not be created by this project if this is not main project. Main project is expected to handle google test.
 get_directory_property(hasParent PARENT_DIRECTORY)
 
-#if(hasParent)
-#  set( BUILD_WINDOWSSTANDARDS_TESTING OFF )
-#  set( DOWNLOAD_GTEST OFF )
-#  if( BUILD_TESTING STREQUAL ON ) # EnergyPlus testing is ON
-#    set( BUILD_WINDOWSSTANDARDS_TESTING ON )
-#  endif()
-#	set( SINGLE_PROJECT ON )
-#else()
+if(hasParent)
+  set( BUILD_WINDOWS_STANDARDS_TESTING OFF )
+  set( DOWNLOAD_GTEST OFF )
+  if( BUILD_TESTING STREQUAL ON ) # EnergyPlus testing is ON
+    set( BUILD_WINDOWS_STANDARDS_TESTING ON )
+  endif()
+	set( SINGLE_PROJECT ON )
+else()
 	option( BUILD_WINDOWS_STANDARDS_TESTING "Build testing targets" ON )
 	option( SINGLE_PROJECT "Build windows standards library as single project" OFF )
 	set( DOWNLOAD_GTEST ON )
-#endif()
+endif()
 
 if( DOWNLOAD_GTEST STREQUAL ON ) # Do not need gtest since it will be processed by E+
 	message("DOWNLOAD_GTEST STREQUAL ON")
