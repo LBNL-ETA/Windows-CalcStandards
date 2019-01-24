@@ -138,7 +138,10 @@ Standard load_standard(std::istream & input)
 
 	std::vector<Method_Text> method_text_blocks = convert(method_blocks);
 	std::vector<Method> methods = convert(method_text_blocks);
-	standard.methods = methods;
+	for(Method const& method : methods)
+	{
+		standard.methods[method.type] = method;
+	}
 	
 	return standard;
 }
