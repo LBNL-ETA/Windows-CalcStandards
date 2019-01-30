@@ -4,13 +4,9 @@ message("Start Windows Standards CMakeLists.txt")
 
 set( target_name Windows-Standards )
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 14)
 
 project( ${target_name} )
-
-include( cmake/WindowsStandardsProjectMacros.cmake )
-include( cmake/WindowsStandardsInternalUtils.cmake )
-include( cmake/WindowsStandardsCompilerFlags.cmake )
 
 # google test will not be created by this project if this is not main project. Main project is expected to handle google test.
 get_directory_property(hasParent PARENT_DIRECTORY)
@@ -18,10 +14,10 @@ get_directory_property(hasParent PARENT_DIRECTORY)
 if(hasParent)
   set( BUILD_WINDOWS_STANDARDS_TESTING OFF )
   set( DOWNLOAD_GTEST OFF )
-  if( BUILD_TESTING STREQUAL ON ) # EnergyPlus testing is ON
+  if( BUILD_TESTING STREQUAL ON ) # Parent testing is ON
     set( BUILD_WINDOWS_STANDARDS_TESTING ON )
   endif()
-	set( SINGLE_PROJECT ON )
+  set( SINGLE_PROJECT ON )
 else()
 	option( BUILD_WINDOWS_STANDARDS_TESTING "Build testing targets" ON )
 	option( SINGLE_PROJECT "Build windows standards library as single project" OFF )
@@ -54,7 +50,6 @@ if( DOWNLOAD_GTEST STREQUAL ON ) # Do not need gtest since it will be processed 
 endif ()
 
 include_directories(include)
-#file(GLOB SOURCES "src/*.cpp")
 
 file( GLOB SOURCES_CPP "src/*.cpp" )
 file( GLOB SOURCES_HPP "src/*.h" )
@@ -63,13 +58,13 @@ LIST(APPEND SOURCES ${SOURCES_HPP} ${SOURCES_CPP} ${INTERFACE_HPP})
 
 add_library( ${target_name} STATIC ${SOURCES} )
 
+set_property(TARGET ${target_name} PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 if(BUILD_WINDOWS_STANDARDS_TESTING )
 	include_directories(src)
-	file( GLOB TEST_CPP RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "test/*.cpp" )
-		
-	CREATE_TEST_TARGETS_WINDOWS_STANDARDS( ${target_name} "${TEST_CPP}" "" )
+#	file( GLOB TEST_CPP RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "test/*.cpp" )
+	enable_testing()
+	add_subdirectory(test)
 endif()
-
-config_compiler_and_linker_windows_standards()
 
 
