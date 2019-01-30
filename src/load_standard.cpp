@@ -4,7 +4,7 @@
 #include <regex>
 #include <fstream>
 
-#include "windows_standards/load_standard.h"
+#include "load_standard.h"
 
 #include "method_text.h"
 #include "create_integration_rule.h"

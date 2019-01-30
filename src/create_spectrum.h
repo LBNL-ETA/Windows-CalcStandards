@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "windows_standards/spectrum.h"
+#include "spectrum.h"
 
 Spectrum load_spectrum(std::istream & input);
 Spectrum create_spectrum(std::string const& line);

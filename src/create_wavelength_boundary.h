@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "windows_standards/wavelength_boundary.h"
+#include "wavelength_boundary.h"
 
 Wavelength_Boundary create_wavelength_boundary(std::string const& line);
 
