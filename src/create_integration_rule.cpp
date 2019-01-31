@@ -9,14 +9,17 @@ Integration_Rule create_integration_rule(std::string const& line)
 	if(line.find("Trapezoidal") != std::string::npos)
 	{
 		integration_rule.type = Integration_Rule_Type::TRAPEZOIDAL;
+        integration_rule.k = 1;
 	}
 	else if(line.find("Rectangular") != std::string::npos)
 	{
 		integration_rule.type = Integration_Rule_Type::RECTANGULAR;
+        integration_rule.k = 1;
 	}
 	else if(line.find("Table") != std::string::npos)
 	{
 		integration_rule.type = Integration_Rule_Type::TABLE;
+        integration_rule.k = 1;
 	}
 
 	std::regex pattern(".*k=(\\S+)\\).*");
