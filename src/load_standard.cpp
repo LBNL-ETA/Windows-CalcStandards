@@ -168,7 +168,7 @@ Standard load_standard(std::string const & path)
 {
     std::ifstream fin(path);
     std::string path_sep = "/";
-    if(path.find("\\"))
+    if(path.find("\\") != std::string::npos)
     {
         path_sep = "\\";
     }
