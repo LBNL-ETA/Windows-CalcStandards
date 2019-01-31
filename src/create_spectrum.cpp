@@ -53,7 +53,7 @@ Spectrum load_spectrum(std::string const& path)
 	return load_spectrum(fin);
 }
 
-Spectrum create_spectrum(std::string const& line)
+Spectrum create_spectrum(std::string const& line, std::string const& standard_directory)
 {
 	Spectrum spectrum;
 
@@ -105,7 +105,8 @@ Spectrum create_spectrum(std::string const& line)
 	}
 	else
 	{
-		spectrum = load_spectrum(line);
+		std::string path = standard_directory + line;
+		spectrum = load_spectrum(path);
 	}
 
 	return spectrum;

@@ -135,7 +135,7 @@ TEST_F(TestCreateWavelengthSet, TestCreateWavelengthSet_Source) {
 
 	std::string line = "Source";
 
-	Wavelength_Set wl_set = create_wavelength_set(line);
+	Wavelength_Set wl_set = create_wavelength_set(line, "");
 
 	EXPECT_EQ(wl_set.type, Wavelength_Set_Type::SOURCE);
 	EXPECT_EQ(wl_set.description, "Source");
@@ -148,7 +148,7 @@ TEST_F(TestCreateWavelengthSet, TestCreateWavelengthSet_Data) {
 
 	std::string line = "Data";
 
-	Wavelength_Set wl_set = create_wavelength_set(line);
+	Wavelength_Set wl_set = create_wavelength_set(line, "");
 
 	EXPECT_EQ(wl_set.type, Wavelength_Set_Type::DATA);
 	EXPECT_EQ(wl_set.description, "Data");

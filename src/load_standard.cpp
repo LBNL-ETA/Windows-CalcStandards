@@ -12,7 +12,7 @@
 #include "create_wavelength_boundary.h"
 #include "create_wavelength_set.h"
 
-Method convert(Method_Text const& method_text)
+Method convert(Method_Text const& method_text, std::string const& standard_directory)
 {
 	Method method;
 
@@ -22,7 +22,7 @@ Method convert(Method_Text const& method_text)
 	string_to_type["COLOR_TRISTIMX"] = Method_Type::COLOR_TRISTIMX;
 	string_to_type["COLOR_TRISTIMY"] = Method_Type::COLOR_TRISTIMY;
 	string_to_type["COLOR_TRISTIMZ"] = Method_Type::COLOR_TRISTIMZ;
-	string_to_type["THERMAL_IR"] = Method_Type::THERMAL_IR;
+	string_to_type["THERMAL IR"] = Method_Type::THERMAL_IR;
 	string_to_type["TUV"] = Method_Type::TUV;
 	string_to_type["SPF"] = Method_Type::SPF;
 	string_to_type["TDW"] = Method_Type::TDW;
@@ -30,9 +30,9 @@ Method convert(Method_Text const& method_text)
 
 	method.type = string_to_type[method_text.name];
 	method.description = method_text.description;
-	method.source_spectrum = create_spectrum(method_text.source_spectrum);
-	method.detector_spectrum = create_spectrum(method_text.detector_spectrum);
-	method.wavelength_set = create_wavelength_set(method_text.wavelength_set);
+	method.source_spectrum = create_spectrum(method_text.source_spectrum, standard_directory);
+	method.detector_spectrum = create_spectrum(method_text.detector_spectrum, standard_directory);
+	method.wavelength_set = create_wavelength_set(method_text.wavelength_set, standard_directory);
 	method.integration_rule = create_integration_rule(method_text.integration_rule);
 	method.min_wavelength = create_wavelength_boundary(method_text.minimum_wavelength);
 	method.max_wavelength = create_wavelength_boundary(method_text.maximum_wavelength);
@@ -40,13 +40,13 @@ Method convert(Method_Text const& method_text)
 	return method;
 }
 
-std::vector<Method> convert(std::vector<Method_Text> const& method_blocks)
+std::vector<Method> convert(std::vector<Method_Text> const& method_blocks, std::string const& standard_directory)
 {
 	std::vector<Method> methods;
 
 	for(Method_Text const& method_block : method_blocks)
 	{
-		methods.push_back(convert(method_block));
+		methods.push_back(convert(method_block, standard_directory));
 	}
 
 	return methods;
@@ -67,9 +67,9 @@ Method_Text convet(std::vector<std::string> const& method_from_file)
 	fields_to_params["Source Spectrum"] = [&converted_method](std::string const& line) {converted_method.source_spectrum = text_after_colon(line); };
 	fields_to_params["Detector Spectrum"] = [&converted_method](std::string const& line) {converted_method.detector_spectrum = text_after_colon(line); };
 	fields_to_params["Wavelength Set"] = [&converted_method](std::string const& line) {converted_method.wavelength_set = text_after_colon(line); };
-	fields_to_params["Integration Rule"] = [&converted_method](std::string const& line) {converted_method.integration_rule = text_after_colon(line); };
-	fields_to_params["Maximum Wavelength"] = [&converted_method](std::string const& line) {converted_method.minimum_wavelength = text_after_colon(line); };
-	fields_to_params["Minimum Wavelength"] = [&converted_method](std::string const& line) {converted_method.maximum_wavelength = text_after_colon(line); };
+	fields_to_params["Integration Rule"] = [&converted_method](std::string const& line) {converted_method.integration_rule = text_after_colon(line); };	
+	fields_to_params["Minimum Wavelength"] = [&converted_method](std::string const& line) {converted_method.minimum_wavelength = text_after_colon(line); };
+    fields_to_params["Maximum Wavelength"] = [&converted_method](std::string const & line) {converted_method.maximum_wavelength = text_after_colon(line); };
 
 	for(std::string const& line : method_from_file)
 	{
@@ -97,7 +97,7 @@ std::vector<Method_Text> convert(std::vector<std::vector<std::string>> const& me
 	return converted_methods;
 }
 
-Standard load_standard(std::istream & input)
+Standard load_standard(std::istream & input, std::string const& standard_directory)
 {
 	std::string line;
 	std::string description;
@@ -137,7 +137,7 @@ Standard load_standard(std::istream & input)
 	}
 
 	std::vector<Method_Text> method_text_blocks = convert(method_blocks);
-	std::vector<Method> methods = convert(method_text_blocks);
+	std::vector<Method> methods = convert(method_text_blocks, standard_directory);
 	for(Method const& method : methods)
 	{
 		standard.methods[method.type] = method;

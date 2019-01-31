@@ -156,7 +156,7 @@ TEST_F(TestCreateSpectrum, TestCreateSpectrum_None) {
 
 	std::string line = "None";
 	
-	Spectrum spectrum = create_spectrum(line);
+	Spectrum spectrum = create_spectrum(line, "");
 
 	EXPECT_EQ(spectrum.type, Spectrum_Type::NONE);
 	EXPECT_EQ(spectrum.description, "None");
@@ -198,7 +198,7 @@ TEST_F(TestCreateSpectrum, TestCreateSpectrum_Blackbody) {
 
 	std::string line = "Blackbody (T=300.0K)";
 
-	Spectrum spectrum = create_spectrum(line);
+	Spectrum spectrum = create_spectrum(line, "");
 
 	EXPECT_EQ(spectrum.type, Spectrum_Type::BLACKBODY);
 	EXPECT_EQ(spectrum.description, "Blackbody");
@@ -213,7 +213,7 @@ TEST_F(TestCreateSpectrum, TestCreateSpectrum_UV_Action) {
 
 	std::string line = "UV Action (a=3.6, b=12.0)";
 
-	Spectrum spectrum = create_spectrum(line);
+	Spectrum spectrum = create_spectrum(line, "");
 
 	EXPECT_EQ(spectrum.type, Spectrum_Type::UV_ACTION);
 	EXPECT_EQ(spectrum.description, "UV Action");
@@ -229,7 +229,7 @@ TEST_F(TestCreateSpectrum, TestCreateSpectrum_Krochmann) {
 
 	std::string line = "Krochmann";
 
-	Spectrum spectrum = create_spectrum(line);
+	Spectrum spectrum = create_spectrum(line, "");
 
 	EXPECT_EQ(spectrum.type, Spectrum_Type::KROCHMANN);
 	EXPECT_EQ(spectrum.description, "Krochmann");	

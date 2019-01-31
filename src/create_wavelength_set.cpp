@@ -44,7 +44,7 @@ Wavelength_Set load_wavelength_set(std::string const& path)
 	return load_wavelength_set(fin);
 }
 
-Wavelength_Set create_wavelength_set(std::string const& line)
+Wavelength_Set create_wavelength_set(std::string const& line, std::string const& standard_directory)
 {
 	Wavelength_Set wavelength_set;
 
@@ -60,7 +60,8 @@ Wavelength_Set create_wavelength_set(std::string const& line)
 	}
 	else
 	{
-		wavelength_set = load_wavelength_set(line);
+		std::string path = line + standard_directory;
+		wavelength_set = load_wavelength_set(path);
 	}
 
 	return wavelength_set;
