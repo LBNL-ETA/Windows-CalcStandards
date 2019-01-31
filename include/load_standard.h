@@ -5,7 +5,7 @@
 
 #include "standard.h"
 
-Standard load_standard(std::istream & in);
+Standard load_standard(std::istream & in, std::string const& standard_directory);
 Standard load_standard(std::string const& path);
 
 #endif
