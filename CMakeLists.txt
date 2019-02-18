@@ -36,8 +36,6 @@ target_include_directories(${LIB_NAME}
 
 
 enable_testing()
-add_subdirectory( tests )
+add_subdirectory(test)
 
-
-#include( generic_cmake_build.txt )
 
