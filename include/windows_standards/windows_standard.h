@@ -1,4 +1,4 @@
-#ifndef 
+#ifndef WINDOW_STANDARDS_WINDOW_STANDARD_H
 #define WINDOW_STANDARDS_WINDOW_STANDARD_H
 
 #include "../../src/integration_rule.h"
