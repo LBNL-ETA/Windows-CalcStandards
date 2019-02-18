@@ -7,7 +7,7 @@
 #include "../../src/spectrum.h"
 #include "../../src/standard.h"
 #include "../../src/wavelength_boundary.h"
-#include "../../src/wacelength_set.h"
+#include "../../src/wavelength_set.h"
 
 #endif
 
