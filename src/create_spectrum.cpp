@@ -1,8 +1,8 @@
-#include "create_spectrum.h"
-
 #include <regex>
 #include <fstream>
 
+#include "create_spectrum.h"
+#include "util.h"
 
 Spectrum load_spectrum(std::istream & input)
 {
@@ -14,19 +14,22 @@ Spectrum load_spectrum(std::istream & input)
 
 	while(std::getline(input, line))
 	{
-		if(line.find("Description") != std::string::npos)
+		std::string line_lower = to_lower(line);
+		if(line_lower.find("description") != std::string::npos)
 		{
 			std::string description = line.substr(line.find(":") + 2);
 			spectrum.description = description;
 			continue;
 		}
-		if(line.find("Type") != std::string::npos)
+		if(line_lower.find("type") != std::string::npos)
 		{			
 			continue;
 		}
-		if(line.find("Wavelength Units") != std::string::npos)			
+		if(line_lower.find("wavelength units") != std::string::npos)
 		{
-			if(line.find("Nanometer") != std::string::npos)
+			//Just check for "anometer" to cover Nanometer, nanometer, Nanometers, nanometers
+			//Rather than have to deal with tolower and issues it brings in
+			if(line_lower.find("nanometer") != std::string::npos)
 			{
 				multiplier *= .001;
 			}
@@ -47,13 +50,13 @@ Spectrum load_spectrum(std::istream & input)
 	return spectrum;
 }
 
-Spectrum load_spectrum(std::string const& path)
+Spectrum load_spectrum(std::filesystem::path const& path)
 {
 	std::ifstream fin(path);
 	return load_spectrum(fin);
 }
 
-Spectrum create_spectrum(std::string const& line, std::string const& standard_directory)
+Spectrum create_spectrum(std::string const& line, std::filesystem::path const& standard_directory)
 {
 	Spectrum spectrum;
 
@@ -105,8 +108,9 @@ Spectrum create_spectrum(std::string const& line, std::string const& standard_di
 	}
 	else
 	{
-		std::string path = standard_directory + line;
-		spectrum = load_spectrum(path);
+		std::filesystem::path spectum_path = standard_directory;
+		spectum_path /= line;
+		spectrum = load_spectrum(spectum_path);
 	}
 
 	return spectrum;

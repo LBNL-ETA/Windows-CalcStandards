@@ -1,11 +1,7 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 project( window_standards VERSION 1.0.1 LANGUAGES CXX )
 set(LIB_NAME ${PROJECT_NAME})
-
-if(NOT "${CMAKE_CXX_STANDARD}")
-	set(CMAKE_CXX_STANDARD 14)
-endif()
 
 if(NOT "${CMAKE_CXX_EXTENSIONS}")
 	set(CMAKE_CXX_EXTENSIONS OFF)

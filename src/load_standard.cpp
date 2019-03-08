@@ -12,7 +12,7 @@
 #include "create_wavelength_boundary.h"
 #include "create_wavelength_set.h"
 
-Method convert(Method_Text const & method_text, std::string const & standard_directory)
+Method convert(Method_Text const & method_text, std::filesystem::path const & standard_directory)
 {
     Method method;
 
@@ -41,7 +41,7 @@ Method convert(Method_Text const & method_text, std::string const & standard_dir
 }
 
 std::vector<Method> convert(std::vector<Method_Text> const & method_blocks,
-                            std::string const & standard_directory)
+                            std::filesystem::path const & standard_directory)
 {
     std::vector<Method> methods;
 
@@ -115,7 +115,7 @@ std::vector<Method_Text> convert(std::vector<std::vector<std::string>> const & m
     return converted_methods;
 }
 
-Standard load_standard(std::istream & input, std::string const & standard_directory)
+Standard load_standard(std::filesystem::path const & path)
 {
     std::string line;
     std::string description;
@@ -125,6 +125,8 @@ Standard load_standard(std::istream & input, std::string const & standard_direct
     std::vector<std::string> method_block;
 
     Standard standard;
+
+	std::ifstream input(path);
 
     while(std::getline(input, line))
     {
@@ -155,7 +157,7 @@ Standard load_standard(std::istream & input, std::string const & standard_direct
     }
 
     std::vector<Method_Text> method_text_blocks = convert(method_blocks);
-    std::vector<Method> methods = convert(method_text_blocks, standard_directory);
+    std::vector<Method> methods = convert(method_text_blocks, path.parent_path());
     for(Method const & method : methods)
     {
         standard.methods[method.type] = method;
@@ -166,14 +168,5 @@ Standard load_standard(std::istream & input, std::string const & standard_direct
 
 Standard load_standard(std::string const & path)
 {
-    std::ifstream fin(path);
-    std::string path_sep = "/";
-    if(path.find("\\") != std::string::npos)
-    {
-        path_sep = "\\";
-    }
-
-    std::string standard_directory = path.substr(0, path.rfind(path_sep) + 1);
-
-    return load_standard(fin, standard_directory);
+	return load_standard(std::filesystem::path(path));
 }

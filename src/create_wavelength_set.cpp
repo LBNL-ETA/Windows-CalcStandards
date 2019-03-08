@@ -1,7 +1,8 @@
-#include "create_wavelength_set.h"
-
 #include <fstream>
 #include <regex>
+
+#include "create_wavelength_set.h"
+#include "util.h"
 
 Wavelength_Set load_wavelength_set(std::istream & input)
 {
@@ -13,16 +14,19 @@ Wavelength_Set load_wavelength_set(std::istream & input)
 
 	while(std::getline(input, line))
 	{
-		if(line.find("Description") != std::string::npos)
+		std::string line_lower = to_lower(line);
+		if(line_lower.find("description") != std::string::npos)
 		{
 			std::string description = line.substr(line.find(":") + 2);
 			wavelength_set.description = description;
 			continue;
 		}
-		if(line.find("Wavelength Units") != std::string::npos
-			&& line.find("Nanometer") != std::string::npos)
+		if(line_lower.find("wavelength units") != std::string::npos)
 		{
-			multiplier *= .001;
+			if(line_lower.find("nanometer") != std::string::npos)
+			{
+				multiplier *= .001;				
+			}
 			continue;
 		}
 
@@ -38,13 +42,13 @@ Wavelength_Set load_wavelength_set(std::istream & input)
 	return wavelength_set;
 }
 
-Wavelength_Set load_wavelength_set(std::string const& path)
+Wavelength_Set load_wavelength_set(std::filesystem::path const& path)
 {
 	std::ifstream fin(path);
 	return load_wavelength_set(fin);
 }
 
-Wavelength_Set create_wavelength_set(std::string const& line, std::string const& standard_directory)
+Wavelength_Set create_wavelength_set(std::string const& line, std::filesystem::path const& standard_directory)
 {
 	Wavelength_Set wavelength_set;
 
@@ -60,8 +64,9 @@ Wavelength_Set create_wavelength_set(std::string const& line, std::string const&
 	}
 	else
 	{
-		std::string path = line + standard_directory;
-		wavelength_set = load_wavelength_set(path);
+		std::filesystem::path wavelength_set_path = standard_directory;
+		wavelength_set_path /= line;
+		wavelength_set = load_wavelength_set(wavelength_set_path);
 	}
 
 	return wavelength_set;

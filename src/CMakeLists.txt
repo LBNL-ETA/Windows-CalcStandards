@@ -17,7 +17,9 @@ add_library( ${LIB_NAME}
 		create_wavelength_set.h         
 		create_wavelength_set.cpp       
 		wavelength_boundary.h
-		wavelength_set.h)
+		wavelength_set.h
+		util.h
+		util.cpp)
 
 
 
@@ -35,3 +37,5 @@ endif()
 if ( MSVC )
     target_compile_options(${LIB_NAME} PRIVATE /W4 /WX)
 endif()
+
+target_compile_features(${LIB_NAME} PRIVATE cxx_std_17)

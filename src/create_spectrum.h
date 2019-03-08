@@ -2,10 +2,11 @@
 #define WINDOWS_STANDARDS_CREATE_SPECTRUM_H_
 
 #include <string>
+#include <filesystem>
 
 #include "spectrum.h"
 
 Spectrum load_spectrum(std::istream & input);
-Spectrum create_spectrum(std::string const& line, std::string const& standard_directory);
+Spectrum create_spectrum(std::string const& line, std::filesystem::path const& standard_directory);
 
 #endif
