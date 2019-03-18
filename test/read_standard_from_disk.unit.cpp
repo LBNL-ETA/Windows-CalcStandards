@@ -10,7 +10,13 @@
 
 extern std::string test_dir;
 
-
+template<typename T, typename U>
+::testing::AssertionResult PAIR_NEAR(std::pair<T, U> const& a, std::pair<T, U> const& b, double delta) {
+	if(abs(a.first - b.first) < delta && abs(a.second - b.second) < delta)
+		return ::testing::AssertionSuccess();
+	else
+		return ::testing::AssertionFailure() << "Pair differs by more than " << delta;
+}
 
 class TestLoadStandardFromDisk : public testing::Test {
 
@@ -47,9 +53,9 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(solar.source_spectrum.type, Spectrum_Type::FILE) << "Solar source spectrum type";
 	EXPECT_EQ(solar.source_spectrum.values.size(), 121) << "Solar source spectrum wavelength count";
 	std::pair<double, double> solar_expected_first_wavelength(0.3, 0.0);
-	std::pair<double, double> solar_expected_last_wavelength(4.045, 6.0);
-	EXPECT_EQ(solar.source_spectrum.values[0], solar_expected_first_wavelength) << "Solar source spectrum first point";
-	EXPECT_EQ(solar.source_spectrum.values[120], solar_expected_first_wavelength) << "Solar source spectrum last point";
+	std::pair<double, double> solar_expected_last_wavelength(4.045, 6.9);
+	EXPECT_TRUE(PAIR_NEAR(solar.source_spectrum.values[0], solar_expected_first_wavelength, 1e-14)) << "Solar source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(solar.source_spectrum.values[120], solar_expected_last_wavelength, 1e-14)) << "Solar source spectrum last point";
 	EXPECT_EQ(solar.detector_spectrum.type, Spectrum_Type::NONE) << "Solar detector spectrum type";
 	EXPECT_EQ(solar.detector_spectrum.values.size(), 0) << "Solar detector spectrum wavelength count";
 	EXPECT_EQ(solar.wavelength_set.type, Wavelength_Set_Type::SOURCE) << "Solar wavelength set type";
@@ -67,14 +73,14 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(photopic.source_spectrum.values.size(), 531) << "Photopic source spectrum wavelength count";
 	std::pair<double, double> photopic_source_expected_first_wavelength(0.3, 0.0341);
 	std::pair<double, double> photopic_source_expected_last_wavelength(0.83, 60.3125);
-	EXPECT_EQ(photopic.source_spectrum.values[0], photopic_source_expected_first_wavelength) << "Photopic source spectrum first point";
-	EXPECT_EQ(photopic.source_spectrum.values[530], photopic_source_expected_first_wavelength) << "Photopic source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(photopic.source_spectrum.values[0], photopic_source_expected_first_wavelength, 1e-14)) << "Photopic source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(photopic.source_spectrum.values[530], photopic_source_expected_last_wavelength, 1e-14)) << "Photopic source spectrum last point";
 	EXPECT_EQ(photopic.detector_spectrum.type, Spectrum_Type::FILE) << "Photopic detector spectrum type";
 	EXPECT_EQ(photopic.detector_spectrum.values.size(), 81) << "Photopic detector spectrum wavelength count";
-	std::pair<double, double> photopic_detector_expected_first_nonzero_wavelength(0.38, 0.0002);
-	std::pair<double, double> photopic_detector_expected_last_nonzero_wavelength(0.77, 0.0001);
-	EXPECT_EQ(photopic.detector_spectrum.values[0], photopic_detector_expected_first_nonzero_wavelength) << "Photopic detector spectrum first nonzero point";
-	EXPECT_EQ(photopic.detector_spectrum.values[77], photopic_detector_expected_first_nonzero_wavelength) << "Photopic detector spectrum last nonzero point";
+	std::pair<double, double> photopic_detector_expected_first_nonzero_wavelength(0.385, 0.0001);
+	std::pair<double, double> photopic_detector_expected_last_nonzero_wavelength(0.76, 0.0001);
+	EXPECT_TRUE(PAIR_NEAR(photopic.detector_spectrum.values[1], photopic_detector_expected_first_nonzero_wavelength, 1e-14)) << "Photopic detector spectrum first nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(photopic.detector_spectrum.values[76], photopic_detector_expected_last_nonzero_wavelength, 1e-14)) << "Photopic detector spectrum last nonzero point";
 	EXPECT_EQ(photopic.wavelength_set.type, Wavelength_Set_Type::FILE) << "Photopic wavelength set type";
 	EXPECT_EQ(photopic.wavelength_set.values.size(), 81) << "Photopic wavelength set wavelength count";
 	EXPECT_EQ(photopic.wavelength_set.values[0], 0.38) << "Photopic wavelength set first point";
@@ -91,14 +97,14 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tristim_x.source_spectrum.values.size(), 531) << "Tristim_x source spectrum wavelength count";
 	std::pair<double, double> tristim_x_source_expected_first_wavelength(0.3, 0.0341);
 	std::pair<double, double> tristim_x_source_expected_last_wavelength(0.83, 60.3125);
-	EXPECT_EQ(tristim_x.source_spectrum.values[0], tristim_x_source_expected_first_wavelength) << "Tristim_x source spectrum first point";
-	EXPECT_EQ(tristim_x.source_spectrum.values[530], tristim_x_source_expected_first_wavelength) << "Tristim_x source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_x.source_spectrum.values[0], tristim_x_source_expected_first_wavelength, 1e-14)) << "Tristim_x source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_x.source_spectrum.values[530], tristim_x_source_expected_last_wavelength, 1e-14)) << "Tristim_x source spectrum last point";
 	EXPECT_EQ(tristim_x.detector_spectrum.type, Spectrum_Type::FILE) << "Tristim_x detector spectrum type";
 	EXPECT_EQ(tristim_x.detector_spectrum.values.size(), 81) << "Tristim_x detector spectrum wavelength count";
-	std::pair<double, double> tristim_x_detector_expected_first_nonzero_wavelength(0.385, 0.0001);
-	std::pair<double, double> tristim_x_detector_expected_last_nonzero_wavelength(0.76, 0.0001);
-	EXPECT_EQ(tristim_x.detector_spectrum.values[1], tristim_x_detector_expected_first_nonzero_wavelength) << "Tristim_x detector spectrum first nonzero point";
-	EXPECT_EQ(tristim_x.detector_spectrum.values[76], tristim_x_detector_expected_first_nonzero_wavelength) << "Tristim_x detector spectrum last nonzero point";
+	std::pair<double, double> tristim_x_detector_expected_first_nonzero_wavelength(0.38, 0.0002);
+	std::pair<double, double> tristim_x_detector_expected_last_nonzero_wavelength(0.77, 0.0001);
+	EXPECT_TRUE(PAIR_NEAR(tristim_x.detector_spectrum.values[0], tristim_x_detector_expected_first_nonzero_wavelength, 1e-14)) << "Tristim_x detector spectrum first nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_x.detector_spectrum.values[78], tristim_x_detector_expected_last_nonzero_wavelength, 1e-14)) << "Tristim_x detector spectrum last nonzero point";
 	EXPECT_EQ(tristim_x.wavelength_set.type, Wavelength_Set_Type::FILE) << "Tristim_x wavelength set type";
 	EXPECT_EQ(tristim_x.wavelength_set.values.size(), 81) << "Tristim_x wavelength set wavelength count";
 	EXPECT_EQ(tristim_x.wavelength_set.values[0], 0.38) << "Tristim_x wavelength set first point";
@@ -115,14 +121,14 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tristim_y.source_spectrum.values.size(), 531) << "Tristim_y source spectrum wavelength count";
 	std::pair<double, double> tristim_y_source_expected_first_wavelength(0.3, 0.0341);
 	std::pair<double, double> tristim_y_source_expected_last_wavelength(0.83, 60.3125);
-	EXPECT_EQ(tristim_y.source_spectrum.values[0], tristim_y_source_expected_first_wavelength) << "Tristim_y source spectrum first point";
-	EXPECT_EQ(tristim_y.source_spectrum.values[530], tristim_y_source_expected_first_wavelength) << "Tristim_y source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_y.source_spectrum.values[0], tristim_y_source_expected_first_wavelength, 1e-14)) << "Tristim_y source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_y.source_spectrum.values[530], tristim_y_source_expected_last_wavelength, 1e-14)) << "Tristim_y source spectrum last point";
 	EXPECT_EQ(tristim_y.detector_spectrum.type, Spectrum_Type::FILE) << "Tristim_y detector spectrum type";
 	EXPECT_EQ(tristim_y.detector_spectrum.values.size(), 81) << "Tristim_y detector spectrum wavelength count";
 	std::pair<double, double> tristim_y_detector_expected_first_nonzero_wavelength(0.385, 0.0001);
 	std::pair<double, double> tristim_y_detector_expected_last_nonzero_wavelength(0.755, 0.0001);
-	EXPECT_EQ(tristim_y.detector_spectrum.values[1], tristim_y_detector_expected_first_nonzero_wavelength) << "Tristim_y detector spectrum first nonzero point";
-	EXPECT_EQ(tristim_y.detector_spectrum.values[75], tristim_y_detector_expected_first_nonzero_wavelength) << "Tristim_y detector spectrum last nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_y.detector_spectrum.values[1], tristim_y_detector_expected_first_nonzero_wavelength, 1e-14)) << "Tristim_y detector spectrum first nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_y.detector_spectrum.values[75], tristim_y_detector_expected_last_nonzero_wavelength, 1e-14)) << "Tristim_y detector spectrum last nonzero point";
 	EXPECT_EQ(tristim_y.wavelength_set.type, Wavelength_Set_Type::FILE) << "Tristim_y wavelength set type";
 	EXPECT_EQ(tristim_y.wavelength_set.values.size(), 81) << "Tristim_y wavelength set wavelength count";
 	EXPECT_EQ(tristim_y.wavelength_set.values[0], 0.38) << "Tristim_y wavelength set first point";
@@ -139,14 +145,14 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tristim_z.source_spectrum.values.size(), 531) << "Tristim_z source spectrum wavelength count";
 	std::pair<double, double> tristim_z_source_expected_first_wavelength(0.3, 0.0341);
 	std::pair<double, double> tristim_z_source_expected_last_wavelength(0.83, 60.3125);
-	EXPECT_EQ(tristim_z.source_spectrum.values[0], tristim_z_source_expected_first_wavelength) << "Tristim_z source spectrum first point";
-	EXPECT_EQ(tristim_z.source_spectrum.values[530], tristim_z_source_expected_first_wavelength) << "Tristim_z source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_z.source_spectrum.values[0], tristim_z_source_expected_first_wavelength, 1e-14)) << "Tristim_z source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_z.source_spectrum.values[530], tristim_z_source_expected_last_wavelength, 1e-14)) << "Tristim_z source spectrum last point";
 	EXPECT_EQ(tristim_z.detector_spectrum.type, Spectrum_Type::FILE) << "Tristim_z detector spectrum type";
 	EXPECT_EQ(tristim_z.detector_spectrum.values.size(), 81) << "Tristim_z detector spectrum wavelength count";
 	std::pair<double, double> tristim_z_detector_expected_first_nonzero_wavelength(0.38, 0.0007);
 	std::pair<double, double> tristim_z_detector_expected_last_nonzero_wavelength(0.555, 0.0011);
-	EXPECT_EQ(tristim_z.detector_spectrum.values[0], tristim_z_detector_expected_first_nonzero_wavelength) << "Tristim_z detector spectrum first nonzero point";
-	EXPECT_EQ(tristim_z.detector_spectrum.values[35], tristim_z_detector_expected_first_nonzero_wavelength) << "Tristim_z detector spectrum last nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_z.detector_spectrum.values[0], tristim_z_detector_expected_first_nonzero_wavelength, 1e-14)) << "Tristim_z detector spectrum first nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(tristim_z.detector_spectrum.values[35], tristim_z_detector_expected_last_nonzero_wavelength, 1e-14)) << "Tristim_z detector spectrum last nonzero point";
 	EXPECT_EQ(tristim_z.wavelength_set.type, Wavelength_Set_Type::FILE) << "Tristim_z wavelength set type";
 	EXPECT_EQ(tristim_z.wavelength_set.values.size(), 81) << "Tristim_z wavelength set wavelength count";
 	EXPECT_EQ(tristim_z.wavelength_set.values[0], 0.38) << "Tristim_z wavelength set first point";
@@ -177,8 +183,8 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tuv.source_spectrum.values.size(), 121) << "TUV source spectrum wavelength count";
 	std::pair<double, double> tuv_source_expected_first_wavelength(0.3, 0.0);
 	std::pair<double, double> tuv_source_expected_last_wavelength(4.045, 6.9);
-	EXPECT_EQ(tuv.source_spectrum.values[0], tuv_source_expected_first_wavelength) << "TUV source spectrum first point";
-	EXPECT_EQ(tuv.source_spectrum.values[120], tuv_source_expected_first_wavelength) << "TUV source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(tuv.source_spectrum.values[0], tuv_source_expected_first_wavelength, 1e-14)) << "TUV source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(tuv.source_spectrum.values[120], tuv_source_expected_last_wavelength, 1e-14)) << "TUV source spectrum last point";
 	EXPECT_EQ(tuv.detector_spectrum.type, Spectrum_Type::NONE) << "TUV detector spectrum type";
 	EXPECT_EQ(tuv.wavelength_set.type, Wavelength_Set_Type::SOURCE) << "TUV wavelength set type";
 	EXPECT_EQ(tuv.wavelength_set.values.size(), 0) << "TUV wavelength set wavelength count";
@@ -194,18 +200,16 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(spf.source_spectrum.values.size(), 61) << "SPF source spectrum wavelength count";
 	std::pair<double, double> spf_source_expected_first_wavelength(0.28, 4.12e-11);
 	std::pair<double, double> spf_source_expected_last_wavelength(0.4, 0.000101);
-	EXPECT_EQ(spf.source_spectrum.values[0], spf_source_expected_first_wavelength) << "SPF source spectrum first point";
-	EXPECT_EQ(spf.source_spectrum.values[60], spf_source_expected_first_wavelength) << "SPF source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(spf.source_spectrum.values[0], spf_source_expected_first_wavelength, 1e-14)) << "SPF source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(spf.source_spectrum.values[60], spf_source_expected_last_wavelength, 1e-14)) << "SPF source spectrum last point";
 	EXPECT_EQ(spf.detector_spectrum.type, Spectrum_Type::FILE) << "SPF detector spectrum type";
 	EXPECT_EQ(spf.detector_spectrum.values.size(), 61) << "SPF detector spectrum wavelength count";
 	std::pair<double, double> spf_detector_expected_first_nonzero_wavelength(0.28, 1.00);
 	std::pair<double, double> spf_detector_expected_last_nonzero_wavelength(0.4, 0.000122);
-	EXPECT_EQ(spf.detector_spectrum.values[0], spf_detector_expected_first_nonzero_wavelength) << "SPF detector spectrum first nonzero point";
-	EXPECT_EQ(spf.detector_spectrum.values[35], spf_detector_expected_first_nonzero_wavelength) << "SPF detector spectrum last nonzero point";
-	EXPECT_EQ(spf.wavelength_set.type, Wavelength_Set_Type::FILE) << "SPF wavelength set type";
-	EXPECT_EQ(spf.wavelength_set.values.size(), 81) << "SPF wavelength set wavelength count";
-	EXPECT_EQ(spf.wavelength_set.values[0], 0.38) << "SPF wavelength set first point";
-	EXPECT_EQ(spf.wavelength_set.values[80], 0.78) << "SPF wavelength set last point";
+	EXPECT_TRUE(PAIR_NEAR(spf.detector_spectrum.values[0], spf_detector_expected_first_nonzero_wavelength, 1e-14)) << "SPF detector spectrum first nonzero point";
+	EXPECT_TRUE(PAIR_NEAR(spf.detector_spectrum.values[60], spf_detector_expected_last_nonzero_wavelength, 1e-14)) << "SPF detector spectrum last nonzero point";
+	EXPECT_EQ(spf.wavelength_set.type, Wavelength_Set_Type::SOURCE) << "SPF wavelength set type";
+	EXPECT_EQ(spf.wavelength_set.values.size(), 0) << "SPF wavelength set wavelength count";
 	EXPECT_EQ(spf.integration_rule.type, Integration_Rule_Type::TRAPEZOIDAL) << "SPF integration rule type";
 	EXPECT_EQ(spf.integration_rule.k, 1.0) << "SPF integration rule k";
 	EXPECT_EQ(spf.min_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "SPF minimum wavelength type";
@@ -218,8 +222,8 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tdw.source_spectrum.values.size(), 121) << "TDW source spectrum wavelength count";
 	std::pair<double, double> tdw_source_expected_first_wavelength(0.3, 0.0);
 	std::pair<double, double> tdw_source_expected_last_wavelength(4.045, 6.9);
-	EXPECT_EQ(tdw.source_spectrum.values[0], tdw_source_expected_first_wavelength) << "TDW source spectrum first point";
-	EXPECT_EQ(tdw.source_spectrum.values[120], tdw_source_expected_first_wavelength) << "TDW source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(tdw.source_spectrum.values[0], tdw_source_expected_first_wavelength, 1e-14)) << "TDW source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(tdw.source_spectrum.values[120], tdw_source_expected_last_wavelength, 1e-14)) << "TDW source spectrum last point";
 	EXPECT_EQ(tdw.detector_spectrum.type, Spectrum_Type::UV_ACTION) << "TDW detector spectrum type";
 	EXPECT_EQ(tdw.detector_spectrum.values.size(), 0) << "TDW detector spectrum wavelength count";
 	EXPECT_EQ(tdw.detector_spectrum.a, 3.6) << "TDW detector spectrum a";
@@ -238,8 +242,8 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tkr.source_spectrum.values.size(), 121) << "TKR source spectrum wavelength count";
 	std::pair<double, double> tkr_source_expected_first_wavelength(0.3, 0.0);
 	std::pair<double, double> tkr_source_expected_last_wavelength(4.045, 6.9);
-	EXPECT_EQ(tkr.source_spectrum.values[0], tkr_source_expected_first_wavelength) << "TKR source spectrum first point";
-	EXPECT_EQ(tkr.source_spectrum.values[120], tkr_source_expected_first_wavelength) << "TKR source spectrum last point";
+	EXPECT_TRUE(PAIR_NEAR(tkr.source_spectrum.values[0], tkr_source_expected_first_wavelength, 1e-14)) << "TKR source spectrum first point";
+	EXPECT_TRUE(PAIR_NEAR(tkr.source_spectrum.values[120], tkr_source_expected_last_wavelength, 1e-14)) << "TKR source spectrum last point";
 	EXPECT_EQ(tkr.detector_spectrum.type, Spectrum_Type::KROCHMANN) << "TKR detector spectrum type";
 	EXPECT_EQ(tkr.detector_spectrum.values.size(), 0) << "TKR detector spectrum wavelength count";
 	EXPECT_EQ(tkr.wavelength_set.type, Wavelength_Set_Type::SOURCE) << "TKR wavelength set type";
