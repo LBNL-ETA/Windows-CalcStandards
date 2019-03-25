@@ -2,6 +2,7 @@
 #define WINDOWS_STANDARDS_METHOD_H_
 
 #include <string>
+#include <map>
 
 #include "integration_rule.h"
 #include "spectrum.h"
@@ -20,6 +21,8 @@ enum class Method_Type {
 	TDW, 
 	TKR
 };
+
+std::map<Method_Type, std::string> method_type_to_name();
 
 struct Method
 {
