@@ -3,6 +3,7 @@
 #include <memory>
 #include <sstream>
 #include <filesystem>
+#include <cmath>
 
 #include "load_standard.h"
 
@@ -10,9 +11,8 @@
 
 extern std::string test_dir;
 
-template<typename T, typename U>
-::testing::AssertionResult PAIR_NEAR(std::pair<T, U> const& a, std::pair<T, U> const& b, double delta) {
-	if(abs(a.first - b.first) < delta && abs(a.second - b.second) < delta)
+::testing::AssertionResult PAIR_NEAR(std::pair<double, double> const& a, std::pair<double, double> const& b, double delta) {
+	if(std::abs(a.first - b.first) < delta && std::abs(a.second - b.second) < delta)
 		return ::testing::AssertionSuccess();
 	else
 		return ::testing::AssertionFailure() << "Pair differs by more than " << delta;
