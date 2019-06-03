@@ -50,13 +50,13 @@ Spectrum load_spectrum(std::istream & input)
 	return spectrum;
 }
 
-Spectrum load_spectrum(std::filesystem::path const& path)
+Spectrum load_spectrum(std::string const& path)
 {
 	std::ifstream fin(path);
 	return load_spectrum(fin);
 }
 
-Spectrum create_spectrum(std::string const& line, std::filesystem::path const& standard_directory)
+Spectrum create_spectrum(std::string const& line, std::string const& standard_directory)
 {
 	Spectrum spectrum;
 
@@ -108,8 +108,8 @@ Spectrum create_spectrum(std::string const& line, std::filesystem::path const& s
 	}
 	else
 	{
-		std::filesystem::path spectum_path = standard_directory;
-		spectum_path /= line;
+		std::string spectum_path = standard_directory;
+		spectum_path += line;
 		spectrum = load_spectrum(spectum_path);
 	}
 

@@ -3,6 +3,7 @@
 #include <functional>
 #include <regex>
 #include <fstream>
+#include <sstream>
 
 #include "load_standard.h"
 
@@ -12,7 +13,29 @@
 #include "create_wavelength_boundary.h"
 #include "create_wavelength_set.h"
 
-Method convert(Method_Text const & method_text, std::filesystem::path const & standard_directory)
+std::string path_sep(std::string const& path)
+{
+	if(path.find("\\") != std::string::npos)
+	{
+		return "\\";
+	}
+	if(path.find("/") != std::string::npos)
+	{
+		return "/";
+	}
+	std::stringstream err;
+	err << "Unable to determine path seperator for " << path;
+	throw std::runtime_error(err.str());
+}
+
+std::string parent_path(std::string const& path)
+{
+	std::string sep = path_sep(path);
+	std::string parent = path.substr(0, path.rfind(sep) + 1);
+	return parent;
+}
+
+Method convert(Method_Text const & method_text, std::string const & standard_directory)
 {
     Method method;
 
@@ -41,7 +64,7 @@ Method convert(Method_Text const & method_text, std::filesystem::path const & st
 }
 
 std::vector<Method> convert(std::vector<Method_Text> const & method_blocks,
-                            std::filesystem::path const & standard_directory)
+                            std::string const & standard_directory)
 {
     std::vector<Method> methods;
 
@@ -115,7 +138,9 @@ std::vector<Method_Text> convert(std::vector<std::vector<std::string>> const & m
     return converted_methods;
 }
 
-Standard load_standard(std::filesystem::path const & path)
+
+
+Standard load_standard(std::string const & path)
 {
     std::string line;
     std::string description;
@@ -157,16 +182,11 @@ Standard load_standard(std::filesystem::path const & path)
     }
 
     std::vector<Method_Text> method_text_blocks = convert(method_blocks);
-    std::vector<Method> methods = convert(method_text_blocks, path.parent_path());
+    std::vector<Method> methods = convert(method_text_blocks, parent_path(path));
     for(Method const & method : methods)
     {
         standard.methods[method.type] = method;
     }
 
     return standard;
-}
-
-Standard load_standard(std::string const & path)
-{
-	return load_standard(std::filesystem::path(path));
 }

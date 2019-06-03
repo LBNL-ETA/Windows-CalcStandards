@@ -35,7 +35,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	nfrc_std_path /= "standards";
 	nfrc_std_path /= "W5_NFRC_2003.std";
 
-	Standard nfrc = load_standard(nfrc_std_path);
+	Standard nfrc = load_standard(nfrc_std_path.string());
 	EXPECT_EQ(nfrc.description, "Consistent with NFRC 300-2003 - default for WINDOW5");
 	EXPECT_EQ(nfrc.methods.size(), 10) << "Number of methods loaded";
 	Method solar = nfrc.methods[Method_Type::SOLAR];
