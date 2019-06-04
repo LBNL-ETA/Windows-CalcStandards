@@ -138,7 +138,12 @@ std::vector<Method_Text> convert(std::vector<std::vector<std::string>> const & m
     return converted_methods;
 }
 
-
+std::string get_file_name_without_extension(std::string const& path)
+{
+	std::string fname = path.substr(path.find_last_of("\\/")+1);
+	fname = fname.substr(0, fname.rfind("."));
+	return fname;
+}
 
 Standard load_standard(std::string const & path)
 {
@@ -150,7 +155,8 @@ Standard load_standard(std::string const & path)
     std::vector<std::string> method_block;
 
     Standard standard;
-
+	standard.name = get_file_name_without_extension(path);
+	
 	std::ifstream input(path);
 
     while(std::getline(input, line))
