@@ -40,7 +40,9 @@ target_include_directories(${LIB_NAME}
 )
 
 
-enable_testing()
-add_subdirectory(test)
+Option(BUILD_Windows_CalcStandards_tests "Build tests for parsing calculation standards." ON)
 
-
+if(BUILD_Windows_CalcStandards_tests)
+	enable_testing()
+	add_subdirectory( test )
+endif()
