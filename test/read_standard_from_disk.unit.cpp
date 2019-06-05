@@ -256,3 +256,14 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tkr.max_wavelength.value, 0.5) << "TKR maximum wavelength value";
 }
 
+TEST_F(TestLoadStandardFromDisk, TestLoadCEN) {
+	SCOPED_TRACE("Begin Test: Load CEN from disk.");
+
+	std::filesystem::path std_path(test_dir);
+	std_path /= "standards";
+	std_path /= "CENblackbody.std";
+
+	Standard cen = load_standard(std_path.string());	
+	EXPECT_EQ(cen.methods.size(), 7) << "Number of methods loaded";
+
+}
