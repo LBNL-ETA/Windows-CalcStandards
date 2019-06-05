@@ -51,7 +51,7 @@ Method convert(Method_Text const & method_text, std::string const & standard_dir
     string_to_type["TDW"] = Method_Type::TDW;
     string_to_type["TKR"] = Method_Type::TKR;
 
-    method.type = string_to_type[method_text.name];
+    method.type = string_to_type.at(method_text.name);
     method.description = method_text.description;
     method.source_spectrum = create_spectrum(method_text.source_spectrum, standard_directory);
     method.detector_spectrum = create_spectrum(method_text.detector_spectrum, standard_directory);
