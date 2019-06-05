@@ -42,13 +42,13 @@ Wavelength_Set load_wavelength_set(std::istream & input)
 	return wavelength_set;
 }
 
-Wavelength_Set load_wavelength_set(std::filesystem::path const& path)
+Wavelength_Set load_wavelength_set(std::string const& path)
 {
 	std::ifstream fin(path);
 	return load_wavelength_set(fin);
 }
 
-Wavelength_Set create_wavelength_set(std::string const& line, std::filesystem::path const& standard_directory)
+Wavelength_Set create_wavelength_set(std::string const& line, std::string const& standard_directory)
 {
 	Wavelength_Set wavelength_set;
 
@@ -64,8 +64,8 @@ Wavelength_Set create_wavelength_set(std::string const& line, std::filesystem::p
 	}
 	else
 	{
-		std::filesystem::path wavelength_set_path = standard_directory;
-		wavelength_set_path /= line;
+		std::string wavelength_set_path = standard_directory;
+		wavelength_set_path += line;
 		wavelength_set = load_wavelength_set(wavelength_set_path);
 	}
 

@@ -3,6 +3,7 @@
 #include <functional>
 #include <regex>
 #include <fstream>
+#include <sstream>
 
 #include "load_standard.h"
 
@@ -12,7 +13,29 @@
 #include "create_wavelength_boundary.h"
 #include "create_wavelength_set.h"
 
-Method convert(Method_Text const & method_text, std::filesystem::path const & standard_directory)
+std::string path_sep(std::string const& path)
+{
+	if(path.find("\\") != std::string::npos)
+	{
+		return "\\";
+	}
+	if(path.find("/") != std::string::npos)
+	{
+		return "/";
+	}
+	std::stringstream err;
+	err << "Unable to determine path seperator for " << path;
+	throw std::runtime_error(err.str());
+}
+
+std::string parent_path(std::string const& path)
+{
+	std::string sep = path_sep(path);
+	std::string parent = path.substr(0, path.rfind(sep) + 1);
+	return parent;
+}
+
+Method convert(Method_Text const & method_text, std::string const & standard_directory)
 {
     Method method;
 
@@ -28,7 +51,17 @@ Method convert(Method_Text const & method_text, std::filesystem::path const & st
     string_to_type["TDW"] = Method_Type::TDW;
     string_to_type["TKR"] = Method_Type::TKR;
 
-    method.type = string_to_type[method_text.name];
+	try
+	{
+		std::string trimmed_name = method_text.name.substr(0, method_text.name.find_first_of("\r\n"));
+		method.type = string_to_type.at(trimmed_name);
+	}
+	catch(std::exception & e)
+	{
+		std::stringstream err_msg;
+		err_msg << "Unable to convert " << method_text.name << " into a method.  Error: " << e.what();
+		throw std::runtime_error(err_msg.str());
+	}
     method.description = method_text.description;
     method.source_spectrum = create_spectrum(method_text.source_spectrum, standard_directory);
     method.detector_spectrum = create_spectrum(method_text.detector_spectrum, standard_directory);
@@ -41,7 +74,7 @@ Method convert(Method_Text const & method_text, std::filesystem::path const & st
 }
 
 std::vector<Method> convert(std::vector<Method_Text> const & method_blocks,
-                            std::filesystem::path const & standard_directory)
+                            std::string const & standard_directory)
 {
     std::vector<Method> methods;
 
@@ -115,7 +148,13 @@ std::vector<Method_Text> convert(std::vector<std::vector<std::string>> const & m
     return converted_methods;
 }
 
-Standard load_standard(std::filesystem::path const & path)
+std::string get_file_name(std::string const& path)
+{
+	std::string fname = path.substr(path.find_last_of("\\/")+1);
+	return fname;
+}
+
+Standard load_standard(std::string const & path)
 {
     std::string line;
     std::string description;
@@ -125,7 +164,9 @@ Standard load_standard(std::filesystem::path const & path)
     std::vector<std::string> method_block;
 
     Standard standard;
-
+	standard.file = path;
+	standard.name = get_file_name(path);
+	
 	std::ifstream input(path);
 
     while(std::getline(input, line))
@@ -157,16 +198,11 @@ Standard load_standard(std::filesystem::path const & path)
     }
 
     std::vector<Method_Text> method_text_blocks = convert(method_blocks);
-    std::vector<Method> methods = convert(method_text_blocks, path.parent_path());
+    std::vector<Method> methods = convert(method_text_blocks, parent_path(path));
     for(Method const & method : methods)
     {
         standard.methods[method.type] = method;
     }
 
     return standard;
-}
-
-Standard load_standard(std::string const & path)
-{
-	return load_standard(std::filesystem::path(path));
 }
