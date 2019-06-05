@@ -154,6 +154,7 @@ Standard load_standard(std::string const & path)
     std::vector<std::string> method_block;
 
     Standard standard;
+	standard.file = path;
 	standard.name = get_file_name(path);
 	
 	std::ifstream input(path);
