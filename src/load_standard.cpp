@@ -53,7 +53,8 @@ Method convert(Method_Text const & method_text, std::string const & standard_dir
 
 	try
 	{
-		method.type = string_to_type.at(method_text.name);
+		std::string trimmed_name = method_text.name.substr(0, method_text.name.find_first_of("\r\n"));
+		method.type = string_to_type.at(trimmed_name);
 	}
 	catch(std::exception & e)
 	{
