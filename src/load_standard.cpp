@@ -55,7 +55,7 @@ Method convert(Method_Text const & method_text, std::string const & standard_dir
 	{
 		method.type = string_to_type.at(method_text.name);
 	}
-	catch(std::runtime_error & e)
+	catch(std::exception & e)
 	{
 		std::stringstream err_msg;
 		err_msg << "Unable to convert " << method_text.name << " into a method.  Error: " << e.what();
