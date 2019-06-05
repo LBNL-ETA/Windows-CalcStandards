@@ -9,6 +9,7 @@ struct Standard
 {
 	std::string name;
 	std::string description;
+	std::string file;
 	std::map<Method_Type, Method> methods;
 };
 
