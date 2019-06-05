@@ -51,7 +51,16 @@ Method convert(Method_Text const & method_text, std::string const & standard_dir
     string_to_type["TDW"] = Method_Type::TDW;
     string_to_type["TKR"] = Method_Type::TKR;
 
-    method.type = string_to_type.at(method_text.name);
+	try
+	{
+		method.type = string_to_type.at(method_text.name);
+	}
+	catch(std::runtime_error & e)
+	{
+		std::stringstream err_msg;
+		err_msg << "Unable to convert " << method_text.name << " into a method.  Error: " << e.what();
+		throw std::runtime_error(err_msg.str());
+	}
     method.description = method_text.description;
     method.source_spectrum = create_spectrum(method_text.source_spectrum, standard_directory);
     method.detector_spectrum = create_spectrum(method_text.detector_spectrum, standard_directory);
