@@ -5,9 +5,11 @@
 #include <filesystem>
 #include <cmath>
 
-#include "load_standard.h"
+#include "load_optical_standard.h"
 
 #include "paths.h"
+
+using namespace window_standards;
 
 extern std::string test_dir;
 
@@ -35,21 +37,21 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	nfrc_std_path /= "standards";
 	nfrc_std_path /= "W5_NFRC_2003.std";
 
-	Standard nfrc = load_standard(nfrc_std_path.string());
+	Optical_Standard nfrc = load_optical_standard(nfrc_std_path.string());
 	EXPECT_EQ(nfrc.description, "Consistent with NFRC 300-2003 - default for WINDOW5");
 	EXPECT_EQ(nfrc.methods.size(), 10) << "Number of methods loaded";
-	Method solar = nfrc.methods[Method_Type::SOLAR];
-	Method photopic = nfrc.methods[Method_Type::PHOTOPIC];
-	Method tristim_x = nfrc.methods[Method_Type::COLOR_TRISTIMX];
-	Method tristim_y = nfrc.methods[Method_Type::COLOR_TRISTIMY];
-	Method tristim_z = nfrc.methods[Method_Type::COLOR_TRISTIMZ];
-	Method thermal_ir = nfrc.methods[Method_Type::THERMAL_IR];
-	Method tuv = nfrc.methods[Method_Type::TUV];
-	Method spf = nfrc.methods[Method_Type::SPF];
-	Method tdw = nfrc.methods[Method_Type::TDW];
-	Method tkr = nfrc.methods[Method_Type::TKR];
+	Optical_Standard_Method solar = nfrc.methods[Optical_Standard_Method_Type::SOLAR];
+	Optical_Standard_Method photopic = nfrc.methods[Optical_Standard_Method_Type::PHOTOPIC];
+	Optical_Standard_Method tristim_x = nfrc.methods[Optical_Standard_Method_Type::COLOR_TRISTIMX];
+	Optical_Standard_Method tristim_y = nfrc.methods[Optical_Standard_Method_Type::COLOR_TRISTIMY];
+	Optical_Standard_Method tristim_z = nfrc.methods[Optical_Standard_Method_Type::COLOR_TRISTIMZ];
+	Optical_Standard_Method thermal_ir = nfrc.methods[Optical_Standard_Method_Type::THERMAL_IR];
+	Optical_Standard_Method tuv = nfrc.methods[Optical_Standard_Method_Type::TUV];
+	Optical_Standard_Method spf = nfrc.methods[Optical_Standard_Method_Type::SPF];
+	Optical_Standard_Method tdw = nfrc.methods[Optical_Standard_Method_Type::TDW];
+	Optical_Standard_Method tkr = nfrc.methods[Optical_Standard_Method_Type::TKR];
 
-	EXPECT_EQ(solar.type, Method_Type::SOLAR) << "Solar method type";
+	EXPECT_EQ(solar.type, Optical_Standard_Method_Type::SOLAR) << "Solar method type";
 	EXPECT_EQ(solar.source_spectrum.type, Spectrum_Type::FILE) << "Solar source spectrum type";
 	EXPECT_EQ(solar.source_spectrum.values.size(), 121) << "Solar source spectrum wavelength count";
 	std::pair<double, double> solar_expected_first_wavelength(0.3, 0.0);
@@ -67,7 +69,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(solar.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "Solar maximum wavelength type";
 	EXPECT_EQ(solar.max_wavelength.value, 2.5) << "Solar maximum wavelength value";
 
-	EXPECT_EQ(photopic.type, Method_Type::PHOTOPIC) << "Photopic method type";
+	EXPECT_EQ(photopic.type, Optical_Standard_Method_Type::PHOTOPIC) << "Photopic method type";
 
 	EXPECT_EQ(photopic.source_spectrum.type, Spectrum_Type::FILE) << "Photopic source spectrum type";
 	EXPECT_EQ(photopic.source_spectrum.values.size(), 531) << "Photopic source spectrum wavelength count";
@@ -92,7 +94,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(photopic.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "Photopic maximum wavelength type";
 	EXPECT_EQ(photopic.max_wavelength.value, 0.78) << "Photopic maximum wavelength value";
 
-	EXPECT_EQ(tristim_x.type, Method_Type::COLOR_TRISTIMX) << "Tristim X method type";
+	EXPECT_EQ(tristim_x.type, Optical_Standard_Method_Type::COLOR_TRISTIMX) << "Tristim X method type";
 	EXPECT_EQ(tristim_x.source_spectrum.type, Spectrum_Type::FILE) << "Tristim X source spectrum type";
 	EXPECT_EQ(tristim_x.source_spectrum.values.size(), 531) << "Tristim_x source spectrum wavelength count";
 	std::pair<double, double> tristim_x_source_expected_first_wavelength(0.3, 0.0341);
@@ -116,7 +118,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tristim_x.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "Tristim_x maximum wavelength type";
 	EXPECT_EQ(tristim_x.max_wavelength.value, 0.78) << "Tristim_x maximum wavelength value";
 
-	EXPECT_EQ(tristim_y.type, Method_Type::COLOR_TRISTIMY) << "Tristim Y method type";
+	EXPECT_EQ(tristim_y.type, Optical_Standard_Method_Type::COLOR_TRISTIMY) << "Tristim Y method type";
 	EXPECT_EQ(tristim_y.source_spectrum.type, Spectrum_Type::FILE) << "Tristim Y source spectrum type";
 	EXPECT_EQ(tristim_y.source_spectrum.values.size(), 531) << "Tristim_y source spectrum wavelength count";
 	std::pair<double, double> tristim_y_source_expected_first_wavelength(0.3, 0.0341);
@@ -140,7 +142,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tristim_y.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "Tristim_y maximum wavelength type";
 	EXPECT_EQ(tristim_y.max_wavelength.value, 0.78) << "Tristim_y maximum wavelength value";
 
-	EXPECT_EQ(tristim_z.type, Method_Type::COLOR_TRISTIMZ) << "Tristim Z method type";
+	EXPECT_EQ(tristim_z.type, Optical_Standard_Method_Type::COLOR_TRISTIMZ) << "Tristim Z method type";
 	EXPECT_EQ(tristim_z.source_spectrum.type, Spectrum_Type::FILE) << "Tristim Z source spectrum type";
 	EXPECT_EQ(tristim_z.source_spectrum.values.size(), 531) << "Tristim_z source spectrum wavelength count";
 	std::pair<double, double> tristim_z_source_expected_first_wavelength(0.3, 0.0341);
@@ -164,7 +166,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tristim_z.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "Tristim_z maximum wavelength type";
 	EXPECT_EQ(tristim_z.max_wavelength.value, 0.78) << "Tristim_z maximum wavelength value";
 
-	EXPECT_EQ(thermal_ir.type, Method_Type::THERMAL_IR) << "Thermal IR method type";
+	EXPECT_EQ(thermal_ir.type, Optical_Standard_Method_Type::THERMAL_IR) << "Thermal IR method type";
 	EXPECT_EQ(thermal_ir.source_spectrum.type, Spectrum_Type::BLACKBODY) << "Thermal_IR source spectrum type";
 	EXPECT_EQ(thermal_ir.source_spectrum.values.size(), 0) << "Thermal_IR source spectrum wavelength count";	
 	EXPECT_EQ(thermal_ir.source_spectrum.t, 300) << "Thermal_IR source spectrum t";
@@ -178,7 +180,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(thermal_ir.min_wavelength.value, 5.0) << "Thermal_IR minimum wavelength value";
 	EXPECT_EQ(thermal_ir.max_wavelength.type, Wavelength_Boundary_Type::WAVELENGTH_SET) << "Thermal_IR maximum wavelength type";
 
-	EXPECT_EQ(tuv.type, Method_Type::TUV) << "TUV method type";
+	EXPECT_EQ(tuv.type, Optical_Standard_Method_Type::TUV) << "TUV method type";
 	EXPECT_EQ(tuv.source_spectrum.type, Spectrum_Type::FILE) << "TUV source spectrum type";
 	EXPECT_EQ(tuv.source_spectrum.values.size(), 121) << "TUV source spectrum wavelength count";
 	std::pair<double, double> tuv_source_expected_first_wavelength(0.3, 0.0);
@@ -195,7 +197,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tuv.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "TUV maximum wavelength type";
 	EXPECT_EQ(tuv.max_wavelength.value, 0.38) << "TUV maximum wavelength value";
 
-	EXPECT_EQ(spf.type, Method_Type::SPF) << "SPF method type";
+	EXPECT_EQ(spf.type, Optical_Standard_Method_Type::SPF) << "SPF method type";
 	EXPECT_EQ(spf.source_spectrum.type, Spectrum_Type::FILE) << "SPF source spectrum type";
 	EXPECT_EQ(spf.source_spectrum.values.size(), 61) << "SPF source spectrum wavelength count";
 	std::pair<double, double> spf_source_expected_first_wavelength(0.28, 4.12e-11);
@@ -217,7 +219,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(spf.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "SPF maximum wavelength type";
 	EXPECT_EQ(spf.max_wavelength.value, 0.4) << "SPF maximum wavelength value";
 
-	EXPECT_EQ(tdw.type, Method_Type::TDW) << "TDW method type";
+	EXPECT_EQ(tdw.type, Optical_Standard_Method_Type::TDW) << "TDW method type";
 	EXPECT_EQ(tdw.source_spectrum.type, Spectrum_Type::FILE) << "TDW source spectrum type";
 	EXPECT_EQ(tdw.source_spectrum.values.size(), 121) << "TDW source spectrum wavelength count";
 	std::pair<double, double> tdw_source_expected_first_wavelength(0.3, 0.0);
@@ -237,7 +239,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadNFRC2003) {
 	EXPECT_EQ(tdw.max_wavelength.type, Wavelength_Boundary_Type::NUMBER) << "TDW maximum wavelength type";
 	EXPECT_EQ(tdw.max_wavelength.value, 0.7) << "TDW maximum wavelength value";
 
-	EXPECT_EQ(tkr.type, Method_Type::TKR) << "TKR method type";
+	EXPECT_EQ(tkr.type, Optical_Standard_Method_Type::TKR) << "TKR method type";
 	EXPECT_EQ(tkr.source_spectrum.type, Spectrum_Type::FILE) << "TKR source spectrum type";
 	EXPECT_EQ(tkr.source_spectrum.values.size(), 121) << "TKR source spectrum wavelength count";
 	std::pair<double, double> tkr_source_expected_first_wavelength(0.3, 0.0);
@@ -263,7 +265,7 @@ TEST_F(TestLoadStandardFromDisk, TestLoadCEN) {
 	std_path /= "standards";
 	std_path /= "CENblackbody.std";
 
-	Standard cen = load_standard(std_path.string());	
+	Optical_Standard cen = load_optical_standard(std_path.string());	
 	EXPECT_EQ(cen.methods.size(), 7) << "Number of methods loaded";
 
 }

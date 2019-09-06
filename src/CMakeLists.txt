@@ -4,17 +4,17 @@ add_library( ${LIB_NAME}
 		integration_rule.h
 		create_integration_rule.h		
 		create_integration_rule.cpp     
-		load_standard.h
-		load_standard.cpp
+		load_optical_standard.h
+		load_optical_standard.cpp
 		create_spectrum.h               		
 		create_spectrum.cpp             
-		method.h
-		method.cpp
-		method_text.h
+		optical_standard_method.h
+		optical_standard_method.cpp
+		optical_standard_method_text.h
 		create_wavelength_boundary.h    
 		create_wavelength_boundary.cpp  
 		spectrum.h
-		standard.h
+		optical_standard.h
 		create_wavelength_set.h         
 		create_wavelength_set.cpp       
 		wavelength_boundary.h

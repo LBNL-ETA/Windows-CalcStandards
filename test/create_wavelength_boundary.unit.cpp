@@ -5,6 +5,8 @@
 
 #include "create_wavelength_boundary.h"
 
+using namespace window_standards;
+
 class TestCreateWavelengthBoundary : public testing::Test {
 
 protected:

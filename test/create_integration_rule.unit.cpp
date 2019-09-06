@@ -5,6 +5,8 @@
 
 #include "create_integration_rule.h"
 
+using namespace window_standards;
+
 class TestCreateIntegrationRule : public testing::Test {
 
 protected:

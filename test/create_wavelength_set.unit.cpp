@@ -6,6 +6,8 @@
 
 #include "create_wavelength_set.h"
 
+using namespace window_standards;
+
 std::istringstream sample_wavelength_set_file()
 {
 	std::string contents = R"###(
