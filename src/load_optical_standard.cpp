@@ -120,11 +120,13 @@ namespace window_standards
 
         for(std::string const & line : method_from_file)
         {
-            for(std::pair<std::string, std::function<void(std::string const &)>> const & kv : fields_to_params)
+            for(std::map<std::string, std::function<void(std::string const &)>>::const_iterator kv = fields_to_params.begin();
+                kv != fields_to_params.end();
+                ++kv)
             {
-                if(line.find(kv.first) != std::string::npos)
+                if(line.find(kv->first) != std::string::npos)
                 {
-                    kv.second(line);
+                    kv->second(line);
                 }
             }
         }
