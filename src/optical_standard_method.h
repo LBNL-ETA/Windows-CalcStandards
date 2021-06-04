@@ -11,25 +11,9 @@
 
 namespace window_standards
 {
-    enum class Optical_Standard_Method_Type
-    {
-        SOLAR,
-        PHOTOPIC,
-        COLOR_TRISTIMX,
-        COLOR_TRISTIMY,
-        COLOR_TRISTIMZ,
-        THERMAL_IR,
-        TUV,
-        SPF,
-        TDW,
-        TKR
-    };
-
-    std::map<Optical_Standard_Method_Type, std::string> method_type_to_name();
-
     struct Optical_Standard_Method
     {
-        Optical_Standard_Method_Type type;
+        std::string name;
         std::string description;
         Spectrum source_spectrum;
         Spectrum detector_spectrum;

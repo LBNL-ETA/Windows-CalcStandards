@@ -40,31 +40,8 @@ namespace window_standards
     Optical_Standard_Method convert(Method_Text const & method_text, std::string const & standard_directory)
     {
         Optical_Standard_Method method;
-
-        std::map<std::string, Optical_Standard_Method_Type> string_to_type;
-        string_to_type["SOLAR"] = Optical_Standard_Method_Type::SOLAR;
-        string_to_type["PHOTOPIC"] = Optical_Standard_Method_Type::PHOTOPIC;
-        string_to_type["COLOR_TRISTIMX"] = Optical_Standard_Method_Type::COLOR_TRISTIMX;
-        string_to_type["COLOR_TRISTIMY"] = Optical_Standard_Method_Type::COLOR_TRISTIMY;
-        string_to_type["COLOR_TRISTIMZ"] = Optical_Standard_Method_Type::COLOR_TRISTIMZ;
-        string_to_type["THERMAL IR"] = Optical_Standard_Method_Type::THERMAL_IR;
-        string_to_type["TUV"] = Optical_Standard_Method_Type::TUV;
-        string_to_type["SPF"] = Optical_Standard_Method_Type::SPF;
-        string_to_type["TDW"] = Optical_Standard_Method_Type::TDW;
-        string_to_type["TKR"] = Optical_Standard_Method_Type::TKR;
-
-        try
-        {
-            std::string trimmed_name = method_text.name.substr(0, method_text.name.find_first_of("\r\n"));
-            method.type = string_to_type.at(trimmed_name);
-        }
-        catch(std::exception & e)
-        {
-            std::stringstream err_msg;
-            err_msg << "Unable to convert " << method_text.name << " into a method.  Error: " << e.what();
-            throw std::runtime_error(err_msg.str());
-        }
-        method.description = method_text.description;
+        method.name = method_text.name;
+		method.description = method_text.description;
         method.source_spectrum = create_spectrum(method_text.source_spectrum, standard_directory);
         method.detector_spectrum = create_spectrum(method_text.detector_spectrum, standard_directory);
         method.wavelength_set = create_wavelength_set(method_text.wavelength_set, standard_directory);
@@ -199,7 +176,7 @@ namespace window_standards
         std::vector<Optical_Standard_Method> methods = convert(method_text_blocks, parent_path(path));
         for(Optical_Standard_Method const & method : methods)
         {
-            standard.methods[method.type] = method;
+            standard.methods[method.name] = method;
         }
 
         return standard;

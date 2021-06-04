@@ -9,7 +9,6 @@ add_library( ${LIB_NAME}
 		create_spectrum.h               		
 		create_spectrum.cpp             
 		optical_standard_method.h
-		optical_standard_method.cpp
 		optical_standard_method_text.h
 		create_wavelength_boundary.h    
 		create_wavelength_boundary.cpp  

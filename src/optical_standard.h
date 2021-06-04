@@ -11,7 +11,7 @@ namespace window_standards
         std::string name;
         std::string description;
         std::string file;
-        std::map<Optical_Standard_Method_Type, Optical_Standard_Method> methods;
+        std::map<std::string, Optical_Standard_Method> methods;
     };
 }   // namespace window_standards
 #endif
