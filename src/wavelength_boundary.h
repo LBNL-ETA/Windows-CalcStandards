@@ -1,18 +1,19 @@
-#ifndef WINDOWS_STANDARDS_WAVELENGTH_BOUNDARY_H_
-#define WINDOWS_STANDARDS_WAVELENGTH_BOUNDARY_H_
+#ifndef WINDOW_STANDARDS_WAVELENGTH_BOUNDARY_H_
+#define WINDOW_STANDARDS_WAVELENGTH_BOUNDARY_H_
 
 #include <limits>
-
-enum class Wavelength_Boundary_Type
+namespace window_standards
 {
-	NUMBER,
-	WAVELENGTH_SET
-};
+    enum class Wavelength_Boundary_Type
+    {
+        NUMBER,
+        WAVELENGTH_SET
+    };
 
-struct Wavelength_Boundary
-{
-	Wavelength_Boundary_Type type;
-	double value = std::numeric_limits<double>::quiet_NaN();
-};
-
+    struct Wavelength_Boundary
+    {
+        Wavelength_Boundary_Type type;
+        double value = std::numeric_limits<double>::quiet_NaN();
+    };
+}   // namespace window_standards
 #endif

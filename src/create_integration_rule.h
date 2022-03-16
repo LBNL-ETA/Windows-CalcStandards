@@ -1,9 +1,11 @@
-#ifndef WINDOWS_STANDARDS_CREATE_INTEGRATION_RULE_H_
-#define WINDOWS_STANDARDS_CREATE_INTEGRATION_RULE_H_
+#ifndef WINDOW_STANDARDS_CREATE_INTEGRATION_RULE_H_
+#define WINDOW_STANDARDS_CREATE_INTEGRATION_RULE_H_
 
-#include <string>
 #include "integration_rule.h"
+#include <string>
 
-Integration_Rule create_integration_rule(std::string const& line);
-
+namespace window_standards 
+{
+	Integration_Rule create_integration_rule(std::string const &line);
+}
 #endif

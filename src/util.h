@@ -2,7 +2,8 @@
 #define WINDOW_STANDARDS_UTIL_H
 
 #include <string>
-
-std::string to_lower(std::string s);
-
+namespace window_standards
+{
+    std::string to_lower(std::string s);
+}
 #endif

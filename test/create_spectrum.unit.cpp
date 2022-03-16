@@ -7,6 +7,8 @@
 
 #include "create_spectrum.h"
 
+using namespace window_standards;
+
 std::istringstream sample_spectrum_file()
 {
 	std::string contents = R"###(
