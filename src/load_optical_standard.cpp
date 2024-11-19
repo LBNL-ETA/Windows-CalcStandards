@@ -4,6 +4,7 @@
 #include <regex>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 #include "load_optical_standard.h"
 
@@ -131,6 +132,7 @@ namespace window_standards
 
     Optical_Standard load_optical_standard(std::string const & path)
     {
+        std::cout << "load_optical_standard: " << path << std::endl;
         std::string line;
         std::string description;
         std::string methods_provided;
