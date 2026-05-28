@@ -28,8 +28,11 @@
         {
             "name": "local",
             "hidden": true,
-            "description": "Base: placeholder for sibling-working-copy overrides. This repository has no LBNL dependencies, so `local` is currently identical to `default`. Inherited by local-debug, local-release, and personal compiler presets so the convention matches the rest of the LBNL repo set.",
-            "inherits": "default"
+            "description": "Base: prefers sibling working copy of googletest (../googletest); falls back to remote when missing. Inherited by local-debug, local-release, and personal compiler presets.",
+            "inherits": "default",
+            "cacheVariables": {
+                "FETCHCONTENT_SOURCE_DIR_GOOGLETEST": "${sourceDir}/../googletest"
+            }
         },
         {
             "name": "local-debug",

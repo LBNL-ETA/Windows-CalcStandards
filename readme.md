@@ -16,7 +16,7 @@ include(FetchContent)
 FetchContent_Declare(
     window_standards
     GIT_REPOSITORY https://github.com/LBNL-ETA/Windows-CalcStandards.git
-    GIT_TAG v1.2.3
+    GIT_TAG v1.2.4
 )
 FetchContent_MakeAvailable(window_standards)
 
@@ -27,7 +27,7 @@ Update `GIT_TAG` to the desired release tag. Note: the library target is `window
 
 ## Building (developers)
 
-This is a leaf repository: it has no external library dependencies beyond GoogleTest for tests. GoogleTest is downloaded automatically via the legacy pre-FetchContent mechanism in `test/CMakeLists.txt` when configuring as the top-level project. Tests build by default (`-DBUILD_Windows_CalcStandards_tests=OFF` to disable).
+This is a leaf repository: it has no external library dependencies beyond GoogleTest for tests. GoogleTest is fetched via `FetchContent_Declare` (pinned to `v1.16.0`) in `test/CMakeLists.txt` when configuring as the top-level project. Tests build by default (`-DBUILD_Windows_CalcStandards_tests=OFF` to disable).
 
 ### Presets
 
@@ -35,8 +35,8 @@ This is a leaf repository: it has no external library dependencies beyond Google
 
 | Preset | When to use it |
 |---|---|
-| `default-debug` / `default-release` | Standard configure on any platform; CI. Picks the system default compiler (MSVC on Windows, system `cc`/`c++` on Linux/macOS). |
-| `local-debug` / `local-release` | Provided for convention only; identical to `default-*` here because this repo has no LBNL siblings to override. Use as the inheritance base for personal compiler presets. |
+| `default-debug` / `default-release` | Standard configure on any platform; CI. Fetches GoogleTest from its declared remote. Picks the system default compiler (MSVC on Windows, system `cc`/`c++` on Linux/macOS). |
+| `local-debug` / `local-release` | Consume a sibling `../googletest` working copy instead of fetching it. Falls back to the declared remote when missing. |
 
 Examples:
 
