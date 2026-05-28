@@ -39,3 +39,6 @@ Builds
 .se
 /.vs
 /bin
+
+# Personal CMake presets (per-developer toolchain overrides)
+CMakeUserPresets.json

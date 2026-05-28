@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project( window_standards VERSION 1.2.2 LANGUAGES CXX )
+project( window_standards VERSION 1.2.3 LANGUAGES CXX )
 set(CMAKE_CXX_STANDARD 20)
 set(LIB_NAME ${PROJECT_NAME})
 
