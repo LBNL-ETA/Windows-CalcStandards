@@ -29,14 +29,16 @@ Update `GIT_TAG` to the desired release tag. Note: the library target is `window
 
 This is a leaf repository: it has no external library dependencies beyond GoogleTest for tests. GoogleTest is fetched via `FetchContent_Declare` (pinned to `v1.16.0`) in `test/CMakeLists.txt` when configuring as the top-level project. Tests build by default (`-DBUILD_Windows_CalcStandards_tests=OFF` to disable).
 
+On MSVC, `/MP` (multi-processor compilation) is enabled automatically so the library, tests, and dependencies compile in parallel. On GCC/Clang, pass `--parallel` to `cmake --build`.
+
 ### Presets
 
 `CMakePresets.json` ships four visible configure presets, plus two hidden inheritance bases:
 
 | Preset | When to use it |
 |---|---|
-| `default-debug` / `default-release` | Standard configure on any platform; CI. Fetches GoogleTest from its declared remote. Picks the system default compiler (MSVC on Windows, system `cc`/`c++` on Linux/macOS). |
-| `local-debug` / `local-release` | Consume a sibling `../googletest` working copy instead of fetching it. Falls back to the declared remote when missing. |
+| `default-debug` / `default-release` | Standard configure on any platform; CI and releases. **Always** fetches GoogleTest from its declared remote — never touches local disk. Picks the system default compiler (MSVC on Windows, system `cc`/`c++` on Linux/macOS). |
+| `local-debug` / `local-release` | Development mode: build against sibling working copies on disk when present (see below). |
 
 Examples:
 
@@ -45,6 +47,21 @@ cmake --preset default-release
 cmake --build build/default-release --parallel
 ctest --test-dir build/default-release -C Release --output-on-failure
 ```
+
+#### Local development mode (`local-*`)
+
+The `local` preset sets a single cache flag, `LBNL_LOCAL_SIBLINGS=ON`. When it is on, each repo's CMakeLists prefers a **sibling working copy** of its *direct* dependencies — here just `../googletest` next to `../Windows-CalcStandards` — over fetching them:
+
+| Direct dependency | Expected sibling path |
+|-------------------|----------------------|
+| googletest | `../googletest` |
+
+Key properties:
+
+- **`default` never uses local repos.** The flag is off, so `default-*` builds are always pure-remote and reproducible — use them for CI and releases. (Build dirs differ per preset, so a prior `local` configure can't leak into a `default` one.)
+- **Per-dependency fallback.** A sibling that isn't checked out falls back to its declared remote independently, so `local-*` is safe to run with any subset of siblings present.
+- **It propagates.** `LBNL_LOCAL_SIBLINGS` is a cache variable, so it cascades into dependency sub-builds. When this repo is consumed as a sibling by a larger LBNL project (e.g. WinCalc) in local mode, it honors the flag and wires up its own direct deps in turn. Each repo only ever names its own direct deps; it never needs to know another repo's internals.
+- **Develop, then release.** Local builds intentionally use your working copies, which may differ from the pinned `GIT_TAG`s. Get the graph green locally, then bump each repo's pinned version and release one at a time.
 
 #### Per-machine compiler presets (`CMakeUserPresets.json`)
 
